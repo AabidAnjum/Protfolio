@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aabid's - Creative Portfolio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://css.gg/css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        // Tailwind CSS Dark Mode Configuration
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        :root {
+            --bg-primary: #FFFFFF;
+            --bg-secondary: #f9fafb;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --header-bg: rgba(255, 255, 255, 0.5);
+            --border-color: #e5e7eb;
+            --link-hover: #4f46e5;
+            --scrollbar-track: #f3f4f6;
+            --scrollbar-thumb: #a5b4fc;
+        }
+
+        html.dark {
+            --bg-primary: #0A0A0A;
+            --bg-secondary: #111827;
+            --text-primary: #e5e7eb;
+            --text-secondary: #9ca3af;
+            --header-bg: rgba(0, 0, 0, 0.3);
+            --border-color: rgba(55, 65, 81, 0.5);
+            --link-hover: #a78bfa;
+            --scrollbar-track: #111827;
+            --scrollbar-thumb: #4f46e5;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background-color: var(--scrollbar-track);
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: var(--scrollbar-thumb);
+            border-radius: 4px;
+        }
+
+        .no-scroll {
+            overflow: hidden;
+        }
+
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            background-color: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        #preloader.loaded {
+            opacity: 0;
+            visibility: hidden;
+        }
+        .preloader-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 0.1em;
+            overflow: hidden;
+        }
+        .preloader-logo-inner {
+            display: inline-block;
+            transform: translateY(100%);
+            animation: reveal-up 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0.3s;
+        }
+
+        @keyframes reveal-up {
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        [data-magnetic] {
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        header {
+            transition: top 0.4s ease-in-out, box-shadow 0.3s ease-in-out;
+            background-color: var(--header-bg);
+            backdrop-filter: blur(12px);
+        }
+
+        #mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            background-color: var(--bg-primary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-100%);
+            transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        #mobile-menu.active {
+            transform: translateY(0);
+        }
+        #mobile-menu a {
+            font-size: 2rem;
+            margin: 1.5rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        #mobile-menu.active a {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        #blob {
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            height: 25rem;
+            width: 25rem;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            animation: rotate 20s infinite;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+        #blur {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: -1;
+            backdrop-filter: blur(12vmax);
+        }
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .hero-heading .char-wrap {
+            display: inline-block;
+            overflow: hidden;
+            vertical-align: top;
+        }
+        .hero-heading .char {
+            display: inline-block;
+            transform: translateY(110%);
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-heading.is-visible .char {
+            transform: translateY(0);
+        }
+
+        .project-card {
+            position: relative;
+            background-color: var(--bg-secondary);
+        }
+        .project-card .spotlight {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: radial-gradient(circle at var(--mouse-x) var(--mouse-y), rgba(199, 210, 254, 0.15), transparent 20%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .project-card:hover .spotlight {
+            opacity: 1;
+        }
+
+        .project-image-wrapper {
+            overflow: hidden;
+            border-radius: 0.5rem;
+            will-change: transform;
+        }
+        .project-card:hover .project-image {
+            filter: brightness(1.1);
+        }
+        .project-card:hover .project-arrow {
+            transform: translateX(5px);
+            color: var(--link-hover);
+        }
+        .project-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        [data-animate] {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        [data-animate].is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 1.5rem 0;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+        }
+        .marquee-item {
+            display: inline-block;
+            font-size: 1.25rem;
+            font-weight: 500;
+            padding: 0 2rem;
+            color: var(--text-secondary);
+        }
+        .marquee-item .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #818cf8;
+            border-radius: 50%;
+            margin: 0 1rem;
+            vertical-align: middle;
+        }
+        @keyframes marquee {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        .availability-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #4ade80;
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 5px #4ade80; }
+            50% { box-shadow: 0 0 12px #4ade80; }
+        }
+        
+        #back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+            z-index: 50;
+        }
+        #back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="antialiased no-scroll">
+
+    <!-- Preloader -->
+    <div id="preloader">
+       <div class="preloader-logo">
+  <img src="logo.png" alt="Logo" class="preloader-logo-inner w-62 h-auto">
+</div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="fixed top-0 left-0 right-0 z-[60]">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center text-[--text-primary]">
+            <a href="#" data-magnetic class="nav-sound">
+                <img src="logo.png" alt="Aabid Sarker Logo" class="w-40 h-auto">
+            </a>
+            <div class="hidden md:flex space-x-2 items-center">
+                <a href="#home" data-magnetic class="hover:text-[--link-hover] transition-colors duration-300 px-4 py-2 nav-sound">Home</a>
+                <a href="#projects" data-magnetic class="hover:text-[--link-hover] transition-colors duration-300 px-4 py-2 nav-sound">Projects</a>
+                <a href="#about" data-magnetic class="hover:text-[--link-hover] transition-colors duration-300 px-4 py-2 nav-sound">About</a>
+                <a href="#contact" data-magnetic class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300 nav-sound">Contact</a>
+                <button id="theme-toggle" class="ml-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors nav-sound">
+                    <i id="theme-icon" class="gg-sun"></i>
+                </button>
+            </div>
+            <div class="md:hidden z-[110] flex items-center">
+                 <button id="theme-toggle-mobile" class="w-10 h-10 flex items-center justify-center rounded-full">
+                    <i id="theme-icon-mobile" class="gg-sun"></i>
+                </button>
+                <button id="mobile-menu-button" class="text-current focus:outline-none ml-2">
+                    <i class="gg-menu-right"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden">
+        <a href="#home" class="mobile-nav-link">Home</a>
+        <a href="#projects" class="mobile-nav-link">Projects</a>
+        <a href="#about" class="mobile-nav-link">About</a>
+        <a href="#contact" class="mobile-nav-link">Contact</a>
+    </div>
+
+    <main class="container mx-auto px-6">
+
+        <!-- Hero Section -->
+        <section id="home" class="min-h-screen flex flex-col justify-center items-center text-center relative overflow-hidden">
+            <div id="blob"></div>
+            <div id="blur"></div>
+            <h1 class="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 leading-tight hero-heading relative" style="opacity: 0;">
+                Creative Designer & <br> Branding Specialist
+            </h1>
+            <p data-animate style="transition-delay: 0.8s;" class="text-base sm:text-lg md:text-xl text-[--text-secondary] max-w-2xl mb-8 relative">
+                I craft bold logos, stunning 3D designs, and immersive tournament visuals that bring brands and esports experiences to life. Currently designing impactful digital content from Rangpur, BD.
+            </p>
+            <div data-animate style="transition-delay: 1s;" class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto relative">
+                <a href="#projects" data-magnetic class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 duration-300 w-full sm:w-auto nav-sound">
+                    View My Work
+                </a>
+                <a href="#contact" data-magnetic class="bg-gray-800 hover:bg-gray-700 text-white dark:bg-gray-700 dark:hover:bg-gray-600 font-semibold py-3 px-6 rounded-lg transition-transform transform hover:scale-105 duration-300 w-full sm:w-auto nav-sound">
+                    Get In Touch
+                </a>
+            </div>
+            <div class="absolute bottom-10 animate-bounce">
+                <svg class="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-20">
+            <h2 data-animate class="text-3xl md:text-4xl font-bold text-center mb-4">Selected Projects</h2>
+            <p data-animate class="text-center text-[--text-secondary] mb-12">Here are some of the projects I'm proud of.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+                <!-- Project Cards -->
+                 <a href="https://www.behance.net/gallery/227768211/Logo-Design-2025" data-animate class="project-card group block rounded-lg overflow-hidden shadow-lg hover:shadow-2xl dark:shadow-none">
+                    <div class="spotlight"></div>
+                    <div class="project-image-wrapper">
+                        <img src="LOGODESIGNPROJECT.png" alt="Project One Thumbnail" class="project-image w-full h-auto object-cover transition-all duration-500 ease-in-out">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="bg-indigo-100 text-indigo-800 dark:bg-indigo-900/50 dark:text-indigo-300 text-xs font-medium px-2.5 py-1 rounded-full">Logo Design</span>
+                            <span class="bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">Visualization</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Creative Logo</h3>
+                        <p class="text-[--text-secondary] mb-4">2d & 3D logos with creative design & Visualization.</p>
+                        <span class="font-medium inline-flex items-center text-indigo-600 dark:text-indigo-400 transition-colors duration-300">
+                            View Case Study <span class="project-arrow ml-2 transition-transform duration-300">&rarr;</span>
+                        </span>
+                    </div>
+                </a>
+                 <a href="https://www.behance.net/gallery/187501487/CLASSICIST-CONQUERORS-SEASON-ONE-(CCS1)" data-animate class="project-card group block rounded-lg overflow-hidden shadow-lg hover:shadow-2xl dark:shadow-none">
+                    <div class="spotlight"></div>
+                    <div class="project-image-wrapper">
+                       <img src="ProjectNew.png" alt="Project Two Thumbnail" class="project-image w-full h-auto object-cover transition-all duration-500 ease-in-out">
+                    </div>
+                    <div class="p-6">
+                         <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900/50 dark:text-fuchsia-300 text-xs font-medium px-2.5 py-1 rounded-full">Esports Visualization</span>
+                            <span class="bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-300 text-xs font-medium px-2.5 py-1 rounded-full">Tournament</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Esports Visualization</h3>
+                        <p class="text-[--text-secondary] mb-4">CLASSICIST CONQUERORS SEASON ONE (CCS1) is the bold launch of a creative battle hosted by Cultural Classicists—where timeless style meets modern innovation. A new era of artistic conquest begins here.</p>
+                        <span class="font-medium inline-flex items-center text-indigo-600 dark:text-indigo-400 transition-colors duration-300">
+                            View Case Study <span class="project-arrow ml-2 transition-transform duration-300">&rarr;</span>
+                        </span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 flex flex-col md:flex-row items-center gap-12 md:gap-16">
+            <div class="md:w-1/2" data-animate>
+                <div class="project-image-wrapper">
+                    <img src="Aabid.jpg" alt="Your Photo" class="project-image rounded-lg shadow-2xl w-full">
+                </div>
+            </div>
+            <div class="md:w-1/2" data-animate style="transition-delay: 150ms;">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
+                <p class="text-[--text-secondary] mb-4">
+                    Aabid Anjum Sarker is a graphic designer from Rangpur, Bangladesh, with over 5 years of freelance experience. He specializes in logo design, posters, and UI graphics, using tools like Adobe Photoshop and Illustrator. Known for his clean, minimalist style and responsive communication, Aabid works with clients globally through platforms like Fiverr.
+                </p>
+                <p class="text-[--text-secondary] mb-6">
+                    I believe great design is about more than just aesthetics; it's about creating intuitive and meaningful solutions that help businesses connect with their audience.
+                </p>
+                <h3 class="text-xl font-semibold mb-3">My Skills</h3>
+                <div class="flex flex-wrap gap-3">
+                    <span class="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium px-3 py-1.5 rounded-full transition-colors nav-sound">UI/UX Design</span>
+                    <span class="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium px-3 py-1.5 rounded-full transition-colors nav-sound">Figma</span>
+                    <span class="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium px-3 py-1.5 rounded-full transition-colors nav-sound">Photoshop</span>
+                    <span class="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium px-3 py-1.5 rounded-full transition-colors nav-sound">Illustrator</span>
+                    <span class="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium px-3 py-1.5 rounded-full transition-colors nav-sound">3D Design</span>
+                    <span class="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium px-3 py-1.5 rounded-full transition-colors nav-sound">Branding</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+        <!-- Marquee Section -->
+    <section class="marquee" data-animate>
+        <div class="marquee-content">
+            <span class="marquee-item">LET'S CONNECT <span class="dot"></span></span>
+            <span class="marquee-item">HAVE AN IDEA? <span class="dot"></span></span>
+            <span class="marquee-item">LET'S CONNECT <span class="dot"></span></span>
+            <span class="marquee-item">HAVE AN IDEA? <span class="dot"></span></span>
+             <!-- Duplicate for seamless loop -->
+            <span class="marquee-item">LET'S CONNECT <span class="dot"></span></span>
+            <span class="marquee-item">HAVE AN IDEA? <span class="dot"></span></span>
+            <span class="marquee-item">LET'S CONNECT <span class="dot"></span></span>
+            <span class="marquee-item">HAVE AN IDEA? <span class="dot"></span></span>
+        </div>
+    </section>
+
+    <div class="container mx-auto px-6">
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 text-center">
+             <h2 data-animate class="text-3xl md:text-4xl font-bold mb-4">Let's Build Something Great</h2>
+             <p data-animate style="transition-delay: 150ms;" class="text-[--text-secondary] max-w-xl mx-auto mb-8">
+                Have a project in mind or just want to say hello? My inbox is always open.
+             </p>
+             <a href="mailto:aabidanjum.sarker@gmail.com" data-magnetic class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-lg py-4 px-10 rounded-lg transition-transform transform hover:scale-105 duration-300 nav-sound">
+                aabidanjum.sarker@gmail.com
+             </a>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-[--border-color]">
+        <div class="container mx-auto px-6 py-8 flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
+             <div class="flex items-center gap-4 text-gray-500 dark:text-gray-400">
+                <span class="flex items-center gap-2">
+                    <span class="availability-dot"></span>
+                    Available for work
+                </span>
+                <span class="text-gray-300 dark:text-gray-700 hidden sm:inline">|</span>
+                <span id="local-time" class="font-mono hidden sm:inline"></span>
+             </div>
+            <p class="text-gray-500 dark:text-gray-400 order-last md:order-none">&copy; 2025 Aabid Sarker. All rights reserved.</p>
+            <div class="flex space-x-4">
+                <a href="#" data-magnetic class="text-gray-500 dark:text-gray-400 hover:text-[--link-hover] transition-colors duration-300 p-2 nav-sound">
+                    <i class="gg-facebook"></i>
+                </a>
+                <a href="#" data-magnetic class="text-gray-500 dark:text-gray-400 hover:text-[--link-hover] transition-colors duration-300 p-2 nav-sound">
+                     <i class="gg-twitter"></i>
+                </a>
+                <a href="#" data-magnetic class="text-gray-500 dark:text-gray-400 hover:text-[--link-hover] transition-colors duration-300 p-2 nav-sound">
+                     <i class="gg-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+    
+    <a href="#home" id="back-to-top" class="bg-indigo-600 hover:bg-indigo-700 text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+    </a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const body = document.body;
+            const preloader = document.getElementById('preloader');
+            const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
+            // --- Preloader Logic ---
+            setTimeout(() => {
+                preloader.classList.add('loaded');
+                body.classList.remove('no-scroll');
+                if (!isTouchDevice) {
+                    setupTextReveal();
+                } else {
+                    const heroHeading = document.querySelector('.hero-heading');
+                    if (heroHeading) heroHeading.style.opacity = 1;
+                }
+            }, 1800);
+
+            // --- Theme Toggler ---
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+            const themeIcon = document.getElementById('theme-icon');
+            const themeIconMobile = document.getElementById('theme-icon-mobile');
+            
+            const iconToggle = () => {
+                const isDark = document.documentElement.classList.contains('dark');
+                if (themeIcon) themeIcon.className = isDark ? 'gg-moon' : 'gg-sun';
+                if (themeIconMobile) themeIconMobile.className = isDark ? 'gg-moon' : 'gg-sun';
+            };
+
+            const themeCheck = () => {
+                const userTheme = localStorage.getItem('theme');
+                const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (userTheme === 'dark' || (!userTheme && systemTheme)) {
+                    document.documentElement.classList.add('dark');
+                }
+                iconToggle();
+            };
+
+            const themeSwitch = () => {
+                if (document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+                iconToggle();
+            };
+
+            themeToggle.addEventListener('click', themeSwitch);
+            themeToggleMobile.addEventListener('click', themeSwitch);
+            themeCheck();
+
+
+            // --- Mobile Menu Toggle ---
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuIcon = mobileMenuButton.querySelector('i');
+            
+            mobileMenu.classList.add('hidden');
+
+            mobileMenuButton.addEventListener('click', () => {
+                if(mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuIcon.className = 'gg-menu-right';
+                    body.classList.remove('no-scroll');
+                    setTimeout(() => mobileMenu.classList.add('hidden'), 500);
+                } else {
+                    mobileMenu.classList.remove('hidden');
+                    setTimeout(() => {
+                        mobileMenu.classList.add('active');
+                        mobileMenuIcon.className = 'gg-close';
+                        body.classList.add('no-scroll');
+                    }, 10);
+                }
+            });
+
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                     mobileMenu.classList.remove('active');
+                     mobileMenuIcon.className = 'gg-menu-right';
+                     body.classList.remove('no-scroll');
+                     setTimeout(() => mobileMenu.classList.add('hidden'), 500);
+                });
+            });
+
+            // --- Hide header on scroll down, show on scroll up ---
+            let lastScrollTop = 0;
+            const header = document.querySelector('header');
+            window.addEventListener("scroll", function() {
+                let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                if (scrollTop > lastScrollTop && scrollTop > header.offsetHeight) {
+                    header.style.top = `-${header.offsetHeight}px`;
+                } else {
+                    header.style.top = "0";
+                }
+                lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+            }, false);
+            
+            // --- JS Animations for Non-Touch Devices ---
+            if (!isTouchDevice) {
+                 // --- Spotlight Effect ---
+                document.querySelectorAll('.project-card').forEach(card => {
+                    card.addEventListener('mousemove', e => {
+                        const rect = card.getBoundingClientRect();
+                        card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+                        card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+                    });
+                });
+
+                // --- Sound Effects ---
+                const synth = new Tone.Synth({
+                    oscillator: { type: 'sine' },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0.3, release: 1 }
+                }).toDestination();
+
+                document.querySelectorAll('.nav-sound').forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        Tone.start();
+                        synth.triggerAttackRelease('C5', '8n');
+                    });
+                });
+
+                // --- Magnetic Elements ---
+                const magneticElements = document.querySelectorAll('[data-magnetic]');
+                magneticElements.forEach(el => {
+                    el.addEventListener('mousemove', function(e) {
+                        const rect = this.getBoundingClientRect();
+                        const x = e.clientX - rect.left - rect.width / 2;
+                        const y = e.clientY - rect.top - rect.height / 2;
+                        this.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                        this.style.transition = 'transform 0.1s linear';
+                    });
+                    el.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translate(0,0)';
+                        this.style.transition = 'transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+                    });
+                });
+
+                // --- Parallax Effect on project images ---
+                const parallaxImages = document.querySelectorAll('.project-image');
+                window.addEventListener('scroll', () => {
+                    const scrollY = window.scrollY;
+                    parallaxImages.forEach(img => {
+                        const rect = img.getBoundingClientRect();
+                        const speed = -0.05;
+                        if(rect.bottom >= 0 && rect.top <= window.innerHeight) {
+                            const translation = (rect.top - window.innerHeight / 2) * speed;
+                            img.style.transform = `translate3d(0, ${translation}px, 0) scale(1.03)`;
+                        }
+                    });
+                });
+            }
+
+            // --- Animate on Scroll (runs on all devices) ---
+            const animatedElements = document.querySelectorAll('[data-animate]');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            animatedElements.forEach(el => observer.observe(el));
+
+            // --- Text Reveal Animation Setup---
+            function setupTextReveal() {
+                const heroHeading = document.querySelector('.hero-heading');
+                if (heroHeading && !heroHeading.classList.contains('is-initialized')) {
+                    heroHeading.classList.add('is-initialized');
+                    heroHeading.style.opacity = 1;
+                    const textContent = heroHeading.innerHTML;
+                    const textParts = textContent.split(/<br\s*\/?>/i);
+                    heroHeading.innerHTML = '';
+                    
+                    textParts.forEach((part, partIndex) => {
+                        part.trim().split('').forEach((char, charIndex) => {
+                            const charSpan = document.createElement('span');
+                            charSpan.className = 'char-wrap';
+                            const innerSpan = document.createElement('span');
+                            innerSpan.className = 'char';
+                            innerSpan.innerHTML = char === ' ' ? '&nbsp;' : char;
+                            innerSpan.style.transitionDelay = `${(partIndex * 100 + charIndex * 30)}ms`;
+                            charSpan.appendChild(innerSpan);
+                            heroHeading.appendChild(charSpan);
+                        });
+                        if (partIndex < textParts.length - 1) {
+                            heroHeading.appendChild(document.createElement('br'));
+                        }
+                    });
+                    
+                    setTimeout(() => {
+                        heroHeading.classList.add('is-visible');
+                    }, 100);
+                }
+            }
+            if (isTouchDevice) {
+                const heroHeading = document.querySelector('.hero-heading');
+                if (heroHeading) heroHeading.style.opacity = 1;
+            }
+
+            // --- Back to Top Button ---
+            const backToTopButton = document.getElementById('back-to-top');
+            window.addEventListener('scroll', () => {
+                if(window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+
+
+            // --- Local Time Clock ---
+            const timeElement = document.getElementById('local-time');
+            function updateTime() {
+                const now = new Date();
+                const options = {
+                    timeZone: 'Asia/Dhaka',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                };
+                timeElement.textContent = now.toLocaleTimeString('en-US', options).replace(/ /g, '');
+            }
+            setInterval(updateTime, 1000);
+            updateTime();
+        });
+    </script>
+</body>
+</html>
